@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export default function SignUpForm({ onSignUpSuccess }) {
-  const [isSignUp, setSignUpClose] = useState(false);
+  const [role, setRole] = useState('user');
   const navigate = useNavigate();
   const {
     register,
@@ -14,8 +14,7 @@ export default function SignUpForm({ onSignUpSuccess }) {
 
   const onSubmit = async (data) => {
     try {
-      await axios.post(`http://localhost:3000/Auth/signup`, data);
-      setSignUpClose(false); 
+      await axios.post('http://localhost:3000/Auth/signup', { ...data, role });
       if (onSignUpSuccess) {
         onSignUpSuccess();
       }
@@ -66,12 +65,19 @@ export default function SignUpForm({ onSignUpSuccess }) {
         />
         {errors.password && <span className="text-red-500 text-xs">Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character</span>}
       </div>
-      <label className='flex items-center mt-2'>
-        <input type='radio' name='option' className='form-radio' required />
-        <span className='ml-2 text-sm'>
-          I agree with the <a href="#" className="text-blue-500">Privacy Policy</a>.
-        </span>
-      </label>
+
+      <div className="mb-3">
+        <label className="block text-sm font-medium text-gray-700">Role:</label>
+        <select
+          {...register("role", { required: true })}
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
 
       <div className="mt-4">
         <button

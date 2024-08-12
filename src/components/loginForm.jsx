@@ -2,10 +2,12 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { changeLoginStatus } from '../app/feature/loginSlice';
 
 function LoginForm({ onLoginSuccess }) {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -14,14 +16,20 @@ function LoginForm({ onLoginSuccess }) {
 
     const onSubmit = async (data) => {
         try {
-            await axios.post(`http://localhost:3000/Auth/login`, data, { withCredentials: true });
-            dispatch(changeLoginStatus(true))
+            const response = await axios.post('http://localhost:3000/Auth/login', data, { withCredentials: true });
+            dispatch(changeLoginStatus(true));
+            const { role } = response.data;
+            if (role === 'admin') {
+                navigate('/admin-profile');
+            } else {
+                navigate('/user-profile');
+            }
             if (onLoginSuccess) {
                 onLoginSuccess();
             }
-            navigate('/signup');
         } catch (error) {
-            dispatch(changeLoginStatus(false)) 
+            dispatch(changeLoginStatus(false));
+            console.error('Login failed:', error);
         }
     };
 
@@ -37,12 +45,11 @@ function LoginForm({ onLoginSuccess }) {
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         {...register("email", {
                             required: true,
-                            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
                         })}
                     />
-                    {errors.email && <span className="text-red-500">Invalid email</span>}
+                    {errors.email && <span className="text-red-500 text-xs">Please enter a valid email address</span>}
                 </div>
-
                 <div>
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
                     <input
@@ -51,18 +58,18 @@ function LoginForm({ onLoginSuccess }) {
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         {...register("password", {
                             required: true,
-                            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
                         })}
                     />
-                    {errors.password && <span className="text-red-500">Invalid password</span>}
+                    {errors.password && <span className="text-red-500 text-xs">Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character</span>}
                 </div>
-
                 <div>
-                    <input
+                    <button
                         type="submit"
-                        value="Login"
                         className="w-full bg-[#3778c2] text-white py-2 px-4 rounded-md hover:bg-[#2e69ac] focus:outline-none focus:bg-[#2e69ac]"
-                    />
+                    >
+                        Login
+                    </button>
                 </div>
                 <div className="mt-4 text-center">
                     <p className="text-sm">Don't have an account? <a href="/" className="text-blue-500">Sign Up here</a>.</p>
