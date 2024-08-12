@@ -14,14 +14,15 @@ export default function SignUpForm({ onSignUpSuccess }) {
 
   const onSubmit = async (data) => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/Auth/signup`, { ...data, role });
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, { ...data, role });
       if (onSignUpSuccess) {
-        onSignUpSuccess();
+          onSignUpSuccess();
       }
       navigate('/login');
-    } catch (error) {
+  } catch (error) {
       console.error('Error during sign up:', error);
-    }
+      setErrorMessage('Signup failed. Please try again.');
+  }
   };
 
   return (
