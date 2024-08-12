@@ -16,7 +16,7 @@ function LoginForm({ onLoginSuccess }) {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post('http://localhost:3000/Auth/login', data, { withCredentials: true });
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/Auth/login`, data, { withCredentials: true });
             dispatch(changeLoginStatus(true));
             const { role } = response.data;
             if (role === 'admin') {

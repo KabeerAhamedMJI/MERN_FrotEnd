@@ -7,7 +7,7 @@ function UserProfile() {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/Auth/profile');
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/Auth/profile`);
                 setUser(response.data);
             } catch (error) {
                 console.error('Error fetching user profile:', error);

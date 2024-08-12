@@ -7,7 +7,7 @@ function AdminProfile() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/Auth/users');
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/Auth/users`);
                 setUsers(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);

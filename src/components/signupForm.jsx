@@ -14,7 +14,7 @@ export default function SignUpForm({ onSignUpSuccess }) {
 
   const onSubmit = async (data) => {
     try {
-      await axios.post('http://localhost:3000/Auth/signup', { ...data, role });
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/Auth/signup`, { ...data, role });
       if (onSignUpSuccess) {
         onSignUpSuccess();
       }
